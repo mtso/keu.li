@@ -1,1 +1,1 @@
-web: ./rebar3 run
+web: ./_build/default/rel/keuli/bin/keuli foreground
