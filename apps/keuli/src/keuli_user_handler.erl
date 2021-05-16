@@ -28,6 +28,21 @@ init(Req, Opts) ->
 
 %% internal functions
 
+-record(font, {
+    import_stmt,
+    css_string,
+    name}).
+
+get_font(<<"archivo_black">>) -> #font{
+    import_stmt = <<"@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap');"/utf8>>,
+    css_string = <<"font-family: 'Archivo Black', sans-serif;\nfont-weight: 400;"/utf8>>,
+    name = <<"Archivo Black"/utf8>>};
+get_font(<<"space_grotesk">>) -> #font{
+    import_stmt = <<"@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap');"/utf8>>,
+    css_string = <<"font-family: 'Space Grotesk', sans-serif;\nfont-weight: 700;"/utf8>>,
+    name = <<"Space Grotesk"/utf8>>};
+get_font(_Default) -> get_font(<<"archivo_black">>).
+
 parse_user(Row) ->
     {Id, Username, DisplayName, CreateTime, ModifyTime, Email, Fields} = Row,
     #user{id=Id,
@@ -88,6 +103,10 @@ render_user_page(User) ->
     Links = render_links(User#user.fields),
     JsonString = mochijson2:encode([{"user", [{fields, User#user.fields}]}]),
     EscapedData = string:replace(JsonString, <<"<">>, <<"\\u003c">>, all),
+    {_, FieldProps} = User#user.fields,
+    Font = get_font(find_prop(FieldProps, <<"display_name_font">>, <<"">>)),
+    DisplayNameFontImport = Font#font.import_stmt,
+    DisplayNameFontStyleString = Font#font.css_string,
     [
         <<"<!DOCTYPE html>
 <html>
@@ -105,10 +124,21 @@ render_user_page(User) ->
         EscapedData,
         <<";
         </script>
+        <style>
+            "/utf8>>,
+        DisplayNameFontImport,
+        <<"
+
+            .display_name {
+                "/utf8>>,
+        DisplayNameFontStyleString,
+        <<"
+            }
+        </style>
     </head>
     <body>
         <div id=\"app\">
-            <h1>"/utf8>>,
+            <h1 class=\"display_name\">"/utf8>>,
         DisplayName,
         <<"</h1>">>,
         Links,

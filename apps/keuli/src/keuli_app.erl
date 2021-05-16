@@ -39,6 +39,7 @@ start(_StartType, _StartArgs) ->
         '_',
         [
             {"/static/[...]", keuli_static_handler, []},
+            {"/favicon.ico", keuli_favicon_handler, []},
             {"/:username", keuli_user_handler, []},
             {"/", keuli_index_handler, []}
         ]
