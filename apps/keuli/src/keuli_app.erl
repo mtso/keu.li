@@ -9,21 +9,52 @@
 
 -export([start/2, stop/1]).
 
+read_priv_file(Filename) ->
+    case code:priv_dir(keuli) of
+        {error, bad_name} ->
+            io:format("bad file name!"),
+            PrivDir = "apps/keuli/priv";
+        PrivDir -> ok
+    end,
+    file:read_file(filename:join([PrivDir, Filename])).
+
+get_pg_conf(App) ->
+    {ok, PgSize} = application:get_env(App, pg_size),
+    {ok, PgHost} = application:get_env(App, pg_host),
+    {ok, PgDatabase} = application:get_env(App, pg_database),
+    {ok, PgUsername} = application:get_env(App, pg_username),
+    {ok, PgPassword} = application:get_env(App, pg_password),
+    [
+        {size, PgSize},
+        {host, PgHost},
+        {database, PgDatabase},
+        {username, PgUsername},
+        {password, PgPassword},
+        {ssl, false}].
+
 start(_StartType, _StartArgs) ->
     {ok, Pid} = keuli_sup:start_link(),
+    PgConf = get_pg_conf(keuli),
+    pgapp:connect(PgConf),
+    % {ok, _, [{Value}]} = pgapp:equery("select current_date as date", []),
+    % {ok, Contents} = read_priv_file("test.txt"),
+    % io:format("~p\n", [binary_to_list(Contents)]),
+    % io:format("|~s|\n", [io_lib:format("~p", [Value])]),
     Routes = [ {
         '_',
         [
-            {"/", keuli_handler, []}
+            {"/static/style.css", keuli_style_handler, []},
+            {"/:name", keuli_handler, []}
+            % ,
+            % {"/", keuli_handler, []}
         ]
     } ],
     Dispatch = cowboy_router:compile(Routes),
-    NumAcceptors = 10,
     Port = os:getenv("PORT", "3000"),
     TransOpts = [ {ip, {0,0,0,0}}, {port, list_to_integer(Port)} ],
     ProtoOpts = #{ env => #{ dispatch => Dispatch } },
-    {ok, _} = cowboy:start_clear(chicken_poo_poo,
-        TransOpts, ProtoOpts),
+    %% Start listening over clear
+    {ok, _} = cowboy:start_clear(keuli_app_clear, TransOpts, ProtoOpts),
     {ok, Pid}.
 
 stop(_State) ->
