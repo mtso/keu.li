@@ -9,13 +9,24 @@
      FROM users WHERE username = $1").
 
 -record(user, {
-  id,
-  create_time,
-  modify_time,
-  username,
-  display_name,
-  email,
-  fields}).
+    id,
+    create_time,
+    modify_time,
+    username,
+    display_name,
+    email,
+    fields}).
+
+init(Req, Opts) ->
+    Username = cowboy_req:binding(username, Req),
+    UserResult = get_user(Username),
+    Req2 = case UserResult of
+        {ok, User} -> cowboy_req:reply(200, #{<<"content-type">> => <<"text/html">>}, render_user_page(User), Req);
+        {error, _} -> cowboy_req:reply(404, #{<<"content-type">> => <<"text/html">>}, render_404(Username), Req)
+    end,
+    {ok, Req2, Opts}.
+
+%% internal functions
 
 parse_user(Row) ->
     {Id, Username, DisplayName, CreateTime, ModifyTime, Email, Fields} = Row,
@@ -41,26 +52,18 @@ timestamp_to_string(Timestamp) ->
         io_lib:format("~4..0B-~2..0B-~2..0BT~2..0B:~2..0B:~wZ",
         [Year, Month, Day, Hour, Minute, Sec])).
 
-get_link(A, Acc) ->
-    case {A, Acc} of
-        {{<<"url">>, Url}, _} -> Url;
-        _ -> Acc
-    end.
-
-get_name(A, Acc) ->
-    case {A, Acc} of
-        {{<<"name">>, Name}, _} -> Name;
-        _ -> Acc
-    end.
-
 escape_url(Text) ->
     T0 = string:replace(Text, <<"\"">>, <<"%22">>, all),
     T1 = string:replace(T0, <<">">>, <<"%3E">>, all),
     string:replace(T1, <<"<">>, <<"%3C">>, all).
 
+find_prop(Props, PropName, Default) ->
+    FindProp = fun(A, Acc) -> case A of {PropName, Value} -> Value; _ -> Acc end end,
+    lists:foldl(FindProp, Default, Props).
+
 render_link(LinkProps) ->
-    Url = lists:foldl(fun(A, B) -> get_link(A, B) end, <<"">>, LinkProps),
-    Name = lists:foldl(fun(A, B) -> get_name(A, B) end, <<"">>, LinkProps),
+    Url = find_prop(LinkProps, <<"url">>, <<"">>),
+    Name = find_prop(LinkProps, <<"name">>, <<"">>),
     [
         <<"<div class=\"link\"><a href=\"">>,
         escape_url(Url),
@@ -71,10 +74,7 @@ render_link(LinkProps) ->
 
 render_links(JsonFields) ->
     {_, Fields} = JsonFields,
-    Links = lists:foldl(
-        fun(A,Ac) -> case {A,Ac} of {{<<"links">>, V}, _} -> V; _ -> Ac end end,
-        [],
-        Fields),
+    Links = find_prop(Fields, <<"links">>, []),
     LinkEls = lists:map(fun(Link) -> {_, Props} = Link, render_link(Props) end, Links),
     [
         <<"<div class=\"links\">">>,
@@ -117,7 +117,7 @@ render_user_page(User) ->
 </html>"/utf8>>
     ].
 
-render_404(Username) ->
+render_404(_) ->
     [
         <<"<!DOCTYPE html>
 <html>
@@ -140,12 +140,3 @@ render_404(Username) ->
     </body>
 </html>"/utf8>>
     ].
-
-init(Req, Opts) ->
-    Username = cowboy_req:binding(username, Req),
-    UserResult = get_user(Username),
-    Req2 = case UserResult of
-        {ok, User} -> cowboy_req:reply(200, #{<<"content-type">> => <<"text/html">>}, render_user_page(User), Req);
-        {error, _} -> cowboy_req:reply(404, #{<<"content-type">> => <<"text/html">>}, render_404(Username), Req)
-    end,
-    {ok, Req2, Opts}.
