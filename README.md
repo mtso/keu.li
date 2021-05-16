@@ -79,3 +79,63 @@ CREATE TABLE IF NOT EXISTS users (
 
 INSERT INTO users (username, email, fields) VALUES ('name', 'example@email.com', '{"links":[{"url":"https://instagram.com/name","name":"ig"},{"url":"https://twitch.tv/name","name":"twitch"}]}')
 ```
+
+Running Dev Server on Production Node
+-------------------------------------
+
+Rename the `apps/keuli` directory to `apps/keuli2`, modify the following files,
+and then run on a different port like `PORT=1337 ./rebar3 run`.
+
+```
+--- a/rebar.config
++++ b/rebar.config
+
+-{relx, [{release, {keuli, "0.1.0"},
+-         [keuli,
++{relx, [{release, {keuli2, "0.1.0"},
++         [keuli2,
+```
+
+```
+--- a/config/sys.config
++++ b/config/sys.config
+
+-  {keuli, [
++  {keuli2, [
+```
+
+```
+--- a/config/vm.args
++++ b/config/vm.args
+
+- -sname keuli
++ -sname keuli2
+```
+
+```
+--- a/apps/keuli/src/keuli.app.src %% Note filename change on .app.src file!
++++ b/apps/keuli2/src/keuli2.app.src
+
+- {application, keuli,
++ {application, keuli2,
+```
+
+```
+--- a/apps/keuli/src/keuli_app.erl
++++ b/apps/keuli2/src/keuli_app.erl
+
+- case code:priv_dir(keuli) of
++ case code:priv_dir(keuli2) of
+
+- PgConf = get_pg_conf(keuli),
++ PgConf = get_pg_conf(keuli2),
+```
+
+```
+--- a/apps/keuli/src/keuli_style_handler.erl
++++ b/apps/keuli2/src/keuli_style_handler.erl
+
+-    case code:priv_dir(keuli) of
++    case code:priv_dir(keuli2) of
+```
+

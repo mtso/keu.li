@@ -12,36 +12,33 @@ render_index_page(Title, Params) ->
         <meta http-equiv='Content-Type' content='text/html;charset=utf-8'/>
         <meta charset=\"UTF-8\">
         <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
-        <title>">>,
+        <title>"/utf8>>,
         Title,
         <<"</title>
         <!--<script src=\"/static/app.js\" type=\"text/javascript\"></script>-->
         <!--<link href=\"/static/font.css\" rel=\"stylesheet\">-->
-        <link rel=\"stylesheet\" type=\"text/css\" href=\"/static/style.css\" />
+        <link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/style.css\" />
         <script type=\"text/javascript\">
-            window.appData = ">>,
+            window.appData = "/utf8>>,
         EscapedData,
         <<";
         </script>
     </head>
     <body>
         <div id=\"app\">
-            <h1>keu.li</h1>
-            <div>Link Bios</div>
+            <h1>크리 keu.li</h1>
+            <div>One Link To Rule Them All</div>
         </div>
     </body>
-</html>">>
+</html>"/utf8>>
     ].
 
 
 init(Req, Opts) ->
-    % Username = cowboy_req:binding(username, Req),
-    % User = get_user(Username),
-    % Links = render_links(User#user.fields),
     Req2 = cowboy_req:reply(200,
         #{<<"content-type">> => <<"text/html">>},
         render_index_page(
-            <<"keu.li link ">>,
+            <<"크리 keu.li | One Link To Rule Them All"/utf8>>,
             [{"foo", <<"bar">>}]),
         Req),
     {ok, Req2, Opts}.

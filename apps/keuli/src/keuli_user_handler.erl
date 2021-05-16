@@ -84,7 +84,7 @@ render_links(JsonFields) ->
 
 render_user_page(User) ->
     DisplayName = User#user.display_name,
-    Title = [DisplayName, <<" | keu.li">>],
+    Title = [DisplayName, <<" | 크리 keu.li"/utf8>>],
     Links = render_links(User#user.fields),
     JsonString = mochijson2:encode([{"user", [{fields, User#user.fields}]}]),
     EscapedData = string:replace(JsonString, <<"<">>, <<"\\u003c">>, all),
@@ -94,27 +94,27 @@ render_user_page(User) ->
     <head>
         <meta charset=\"UTF-8\">
         <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
-        <title>">>,
+        <title>"/utf8>>,
         Title,
         <<"</title>
         <!--<script src=\"/static/app.js\" type=\"text/javascript\"></script>-->
         <!--<link href=\"/static/font.css\" rel=\"stylesheet\">-->
-        <link rel=\"stylesheet\" type=\"text/css\" href=\"/static/style.css\" />
+        <link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/style.css\" />
         <script type=\"text/javascript\">
-            window.appData = ">>,
+            window.appData = "/utf8>>,
         EscapedData,
         <<";
         </script>
     </head>
     <body>
         <div id=\"app\">
-            <h1>">>,
+            <h1>"/utf8>>,
         DisplayName,
         <<"</h1>">>,
         Links,
         <<"</div>
     </body>
-</html>">>
+</html>"/utf8>>
     ].
 
 render_404(Username) ->
@@ -127,18 +127,18 @@ render_404(Username) ->
         <title>keu.li | Page Not Found</title>
         <!--<script src=\"/static/app.js\" type=\"text/javascript\"></script>-->
         <!--<link href=\"/static/font.css\" rel=\"stylesheet\">-->
-        <link rel=\"stylesheet\" type=\"text/css\" href=\"/static/style.css\" />
+        <link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/style.css\" />
         <script type=\"text/javascript\">
         </script>
     </head>
     <body>
         <div id=\"app\">
-            <h1>keu.li</h1>">>,
-            <<"<div>
-            <h3>The page you're looking for does not exist.</h3><a href=\"/\">Return to the homepage</a></div>">>,
+            <h1>keu.li</h1>"/utf8>>,
+        <<"<div>
+            <h3>The page you're looking for does not exist.</h3><a href=\"/\">Return to the homepage</a></div>"/utf8>>,
         <<"</div>
     </body>
-</html>">>
+</html>"/utf8>>
     ].
 
 init(Req, Opts) ->

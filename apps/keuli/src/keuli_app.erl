@@ -7,7 +7,7 @@
 
 -behaviour(application).
 
--export([start/2, stop/1]).
+-export([start/2, stop/1, read_priv_file/1]).
 
 read_priv_file(Filename) ->
     case code:priv_dir(keuli) of
@@ -38,7 +38,7 @@ start(_StartType, _StartArgs) ->
     Routes = [ {
         '_',
         [
-            {"/static/style.css", keuli_style_handler, []},
+            {"/static/[...]", keuli_static_handler, []},
             {"/:username", keuli_user_handler, []},
             {"/", keuli_index_handler, []}
         ]
