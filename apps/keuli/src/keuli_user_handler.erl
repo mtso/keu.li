@@ -124,7 +124,7 @@ render_404(Username) ->
     <head>
         <meta charset=\"UTF-8\">
         <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
-        <title>keu.li | Page Not Found</title>
+        <title>크리 keu.li | Page Not Found</title>
         <!--<script src=\"/static/app.js\" type=\"text/javascript\"></script>-->
         <!--<link href=\"/static/font.css\" rel=\"stylesheet\">-->
         <link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/style.css\" />

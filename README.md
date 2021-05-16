@@ -1,5 +1,5 @@
-keuli
-=====
+크리 keu.li
+==========
 
 `keu.li` lets users set up a simple page with social media links so that just
 one link can be shared to share all the links :) (exactly like linktree).
