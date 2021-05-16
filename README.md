@@ -39,6 +39,22 @@ server {
 }
 ```
 
+Release
+=======
+
+`<bin>/keuli restart` should automatically upgrade if the new version was
+set in rebar.config and .app.src in the release compilation.
+
+```sh
+$ ./rebar3 release
+$ ./_build/default/rel/keuli/bin/keuli restart
+```
+
+If not running, spin up the app in the background with `<bin>/keuli daemon`
+```sh
+$ ./_build/default/rel/keuli/bin/keuli daemon
+```
+
 Build
 =====
 
