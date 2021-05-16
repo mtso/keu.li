@@ -1,15 +1,46 @@
-keuli2
+keuli
 =====
 
-An OTP application
+`keu.li` lets users set up a simple page with social media links so that just
+one link can be shared to share all the links :) (exactly like linktree).
 
 Configuration
--------------
+=============
+
+Runtime variables
+-----------------
 
 Update `config/sys.config` with database credentials.
 
-Build
+nginx
 -----
+
+Assuming the node is running and listening on 127.0.0.1:3000, and nginx is
+set up and running.
+
+`/etc/nginx/sites-available/default` is symlinked to `/etc/nginx/sites-enabled/default`.
+No need to directly modify `/etc/nginx/nginx.conf`, `include /etc/nginx/sites-enabled/*;`
+will include the configs in sites-available/default.
+
+```
+server {
+        ...
+        location / { # Comment out the try_files line and add the proxy lines.
+                # First attempt to serve request as file, then
+                # as directory, then fall back to displaying a 404.
+                # try_files $uri $uri/ =404;
+                proxy_pass http://127.0.0.1:3000;
+
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+        }
+}
+```
+
+Build
+=====
 
     $ rebar3 compile
 
