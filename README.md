@@ -41,5 +41,5 @@ CREATE TABLE IF NOT EXISTS users (
   UNIQUE(username)
 )
 
-INSERT INTO users (username, email, fields) VALUES ('matthew', 'matthewtso@gmail.com', '{"links":[{"url":"https://matthewtso.com","name":"furniture"},{"url":"https://mtso.io","name":"code"}]}')
+INSERT INTO users (username, email, fields) VALUES ('name', 'example@email.com', '{"links":[{"url":"https://instagram.com/name","name":"ig"},{"url":"https://twitch.tv/name","name":"twitch"}]}')
 ```
