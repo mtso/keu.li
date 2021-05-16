@@ -24,8 +24,7 @@ get_pg_conf(App) ->
     {ok, PgDatabase} = application:get_env(App, pg_database),
     {ok, PgUsername} = application:get_env(App, pg_username),
     {ok, PgPassword} = application:get_env(App, pg_password),
-    [
-        {size, PgSize},
+    [   {size, PgSize},
         {host, PgHost},
         {database, PgDatabase},
         {username, PgUsername},
@@ -36,17 +35,12 @@ start(_StartType, _StartArgs) ->
     {ok, Pid} = keuli_sup:start_link(),
     PgConf = get_pg_conf(keuli),
     pgapp:connect(PgConf),
-    % {ok, _, [{Value}]} = pgapp:equery("select current_date as date", []),
-    % {ok, Contents} = read_priv_file("test.txt"),
-    % io:format("~p\n", [binary_to_list(Contents)]),
-    % io:format("|~s|\n", [io_lib:format("~p", [Value])]),
     Routes = [ {
         '_',
         [
             {"/static/style.css", keuli_style_handler, []},
-            {"/:name", keuli_handler, []}
-            % ,
-            % {"/", keuli_handler, []}
+            {"/:username", keuli_user_handler, []},
+            {"/", keuli_index_handler, []}
         ]
     } ],
     Dispatch = cowboy_router:compile(Routes),

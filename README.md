@@ -3,6 +3,11 @@ keuli2
 
 An OTP application
 
+Configuration
+-------------
+
+Update `config/sys.config` with database credentials.
+
 Build
 -----
 
