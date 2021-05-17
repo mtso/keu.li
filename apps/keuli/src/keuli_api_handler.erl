@@ -41,7 +41,7 @@ render_user_json(User) ->
          {fields, User#user.fields}]).
 
 render_404_json() ->
-    mochijson2:encode([{"error", "Not found"}]).
+    mochijson2:encode([{error, <<"Not found"/utf8>>}]).
 
 parse_user(Row) ->
     {Id, Username, DisplayName, DisplayImageUrl, CreateTime, ModifyTime,
