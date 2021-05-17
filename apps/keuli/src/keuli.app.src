@@ -1,6 +1,6 @@
 {application, keuli,
  [{description, "An OTP application"},
-  {vsn, "0.4.1"},
+  {vsn, "0.4.6"},
   {registered, []},
   {mod, {keuli_app, []}},
   {applications,

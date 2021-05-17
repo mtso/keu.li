@@ -158,14 +158,24 @@ render_404(_) ->
         <!--<script src=\"/static/app.js\" type=\"text/javascript\"></script>-->
         <!--<link href=\"/static/font.css\" rel=\"stylesheet\">-->
         <link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/style.css\" />
-        <script type=\"text/javascript\">
-        </script>
+        <style>
+        @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Black+Han+Sans&display=swap');
+
+        .typemark {
+            font-family: 'Archivo Black', sans-serif;
+            font-weight: 400;
+        }
+        .typemark_kr {
+            font-family: 'Black Han Sans', sans-serif;
+            font-weight: 400;
+        }
+        </style>
     </head>
     <body>
         <div id=\"app\">
-            <h1>keu.li</h1>"/utf8>>,
+            <h1><span class=\"typemark_kr\">크리</span> <span class=\"typemark\">keu.li</span></h1>"/utf8>>,
         <<"<div>
-            <h3>The page you're looking for does not exist.</h3><a href=\"/\">Return to the homepage</a></div>"/utf8>>,
+            <h3>The page you're looking for does not exist.<div style=\"margin-top:0.3em\"><a href=\"/\">Return to the homepage</a></div></h3></div>"/utf8>>,
         <<"</div>
     </body>
 </html>"/utf8>>
