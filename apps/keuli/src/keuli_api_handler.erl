@@ -6,17 +6,7 @@
     "SELECT id, username, display_name, display_image_url, create_time, modify_time,
             email, email_is_verified, fields
      FROM users WHERE username = $1").
-% CREATE TABLE IF NOT EXISTS users (
-%   id SERIAL PRIMARY KEY,
-%   create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-%   modify_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-%   username VARCHAR(255),
-%   display_name VARCHAR(4095),
-%   display_image_url VARCHAR(4095),
-%   email VARCHAR(255),
-%   email_is_verified BOOLEAN DEFAULT FALSE,
-%   fields JSON,
-%   UNIQUE(username)
+
 -record(user, {
     id,
     create_time,
@@ -49,14 +39,6 @@ render_user_json(User) ->
          {display_name, User#user.display_name},
          {display_image_url, User#user.display_image_url},
          {fields, User#user.fields}]).
-    % mochijson2:encode(#{
-    %     id => User#user.id,
-    %     display_name => User#user.display_name,
-    %     display_image_url => User#user.display_image_url,
-    %     create_time => User#user.create_time,
-    %     modify_time => User#user.modify_time,
-    %     username => User#user.username,
-    %     fields => User#user.fields}).
 
 render_404_json() ->
     mochijson2:encode([{"error", "Not found"}]).
